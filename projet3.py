@@ -26,26 +26,26 @@ class Winner(Enum):
     PLAYER1 = 3
     PLAYER2 = 4
 
-game_mode = None
-secret_number = None
-winner = None
-guess_left = None
+game_mode: GameMode = None
+secret_number: int = None
+winner: Winner = None
+guess_left: int = None
+last_guess: int = None
 
 # Pour le mode ordi devine
-computer_guess = None
-min_computer_guess = None
-max_computer_guess = None
+min_computer_guess: int = None
+max_computer_guess: int = None
 
 # Pour le mode 2 joueurs
-secret_number2 = None
-turn = None
+secret_number2: int = None
+turn: 1 | 2 = None
 
-current_window = Window.MAIN
-previous_window = None
+current_window: Window = Window.MAIN
+previous_window: Window = None
 
 selected_config = None
 
-invalid_input_print = None
+invalid_input_print: str = None
 
 # 0 signifie pas de limite
 guess_limit = {"name": "la limite de coups", "value": 0}
@@ -94,7 +94,6 @@ def reset_game():
     game_mode = None
     secret_number = None
     guess_left = None
-    turn = None
     change_window(Window.MAIN)
     
 def set_invalid_input(msg):
@@ -184,30 +183,28 @@ def print_ask_guess():
     print(s + " entre {} et {}:".format(min_number["value"], max_number["value"]))
 
 def response_ask_guess(r: str):
-    global winner, game_mode, turn, guess_left
+    global winner, game_mode, turn, guess_left, last_guess
     if not is_int(r):
         set_invalid_input("Doit être un nombre entier.")
         return
     
     n = int(r)
-    if n > secret_number:
-        print("Le nombre mystère est plus petit.")
-    elif n < secret_number:
-        print("Le nombre mystère est plus grand.")
-    else:
-        change_window(Window.END_SCREEN)
-        if game_mode == GameMode.PLAYER_GUESS:
+    if game_mode == GameMode.PLAYER_GUESS:
+        if n > secret_number:
+            print("Le nombre mystère est plus petit.")
+        elif n < secret_number:
+            print("Le nombre mystère est plus grand.")
+        else:
+            change_window(Window.END_SCREEN)
             winner = Winner.PLAYER
+            return
 
-        elif game_mode == GameMode.TWO_PLAYERS:
-            if turn == 1:
-                winner = Winner.PLAYER1
-            else:
-                winner = Winner.PLAYER2
-        return
-    
-    # Pas de limite de guess dans le mode 2 joueurs
-    if guess_left == math.inf or game_mode == GameMode.TWO_PLAYERS:
+    elif game_mode == GameMode.TWO_PLAYERS:
+        last_guess = n
+        change_window(Window.ASK_IS_CORRECT)
+        return # Pas de limite de guess dans le mode 2 joueurs
+
+    if guess_left == math.inf:
         return
 
     guess_left -= 1
@@ -248,43 +245,75 @@ def response_ask_secret_number(r: str):
             secret_number2 = n
             turn = 1
             change_window(Window.ASK_GUESS)
+            clear()
 
 
 def print_ask_is_correct():
-    global computer_guess, min_computer_guess, max_computer_guess
-    computer_guess = (min_computer_guess + max_computer_guess) // 2
-    print(
-        "L'ordinateur a choisi le nombre {}. Indiquez si votre nombre est plus petit (1), plus grand (2) ou est le bon (3)."
-        .format(computer_guess)
-    )
+    global last_guess, min_computer_guess, max_computer_guess, last_guess
+    if game_mode == GameMode.COMPUTER_GUESS:
+        last_guess = (min_computer_guess + max_computer_guess) // 2
+        print(
+            "L'ordinateur a choisi le nombre {}. Indiquez si votre nombre est plus petit (1), plus grand (2) ou est le bon (3)."
+            .format(last_guess)
+        )
+    elif game_mode == GameMode.TWO_PLAYERS:
+        print(
+            "Le {} a choisi le nombre {}. Indiquez si votre nombre est plus petit (1), plus grand (2) ou est le bon (3)."
+            .format(get_current_player_name(), last_guess)
+        )
 
 def response_ask_is_correct(r: str):
-    global computer_guess, min_computer_guess, max_computer_guess, winner, guess_left
+    global last_guess, min_computer_guess, max_computer_guess, winner, guess_left, turn
     if not is_int(r):
         set_invalid_input("Doit être soit 1 soit 2.")
         return
+    
+    secret_number_ = secret_number
+    if game_mode == GameMode.TWO_PLAYERS and turn == 1:
+        secret_number_ = secret_number2
 
-    if (r == "1" and secret_number >= computer_guess) \
-    or (r == "2" and secret_number <= computer_guess) \
-    or (r == "3" and secret_number != computer_guess):
+    if (r == "1" and secret_number_ >= last_guess) \
+    or (r == "2" and secret_number_ <= last_guess) \
+    or (r == "3" and secret_number_ != last_guess):
         print("Stop right there, criminal scum! Vous avez menti !")
-        winner = Winner.COMPUTER
+        if game_mode == GameMode.COMPUTER_GUESS:
+            winner = Winner.COMPUTER
+        elif game_mode == GameMode.TWO_PLAYERS:
+            if turn == 1:
+                winner = Winner.PLAYER1
+            else:
+                winner = Winner.PLAYER2
         change_window(Window.END_SCREEN)
         return
 
-    if r == "1":
-        max_computer_guess = computer_guess - 1
-    elif r == "2":
-        min_computer_guess = computer_guess + 1
-    elif r == "3":
-        winner = Winner.COMPUTER
-        change_window(Window.END_SCREEN)
-        return
-    else:
-        set_invalid_input("Doit être soit 1 soit 2")
+    if game_mode == GameMode.COMPUTER_GUESS:
+        if r == "1":
+            max_computer_guess = last_guess - 1
+        elif r == "2":
+            min_computer_guess = last_guess + 1
+        elif r == "3":
+            winner = Winner.COMPUTER
+            change_window(Window.END_SCREEN)
+            return
+        else:
+            set_invalid_input("Doit être soit 1 soit 2 soit 3")
+    elif game_mode == GameMode.TWO_PLAYERS:
+        if r == "3":
+            if turn == 1:
+                winner = Winner.PLAYER1
+            else:
+                winner = Winner.PLAYER2
+            change_window(Window.END_SCREEN)
+        else:
+            if turn == 1:
+                turn = 2
+            else:
+                turn = 1
+            change_window(Window.ASK_GUESS)
 
-    # Pas de limite de guess dans le mode 2 joueurs
-    if guess_left == math.inf or game_mode == GameMode.TWO_PLAYERS:
+        return # Pas de limite de guess dans le mode 2 joueurs
+
+    if guess_left == math.inf:
         return
 
     guess_left -= 1
