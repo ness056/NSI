@@ -79,8 +79,8 @@ def entre_8_12_no_if(n: float) -> bool:
 
 ## 2)
 
-def est_neveu_donald(prenom: str) -> bool:
-    if prenom == "Riri" or prenom == "Fifi" or prenom == "Loulou":
+def est_neveu_donald(name: str) -> bool:
+    if name == "Riri" or name == "Fifi" or name == "Loulou":
         return True
     return False
 
@@ -149,8 +149,8 @@ def terrain_valid(long: float, larg: float) -> bool:
 
 ## V.3
 
-def est_bissextile(annee: int) -> bool:
-    return (annee % 4 == 0 and annee % 100 != 0) or annee % 400 == 0
+def est_bissextile(year: int) -> bool:
+    return (year % 4 == 0 and year % 100 != 0) or year % 400 == 0
 
 ## Les chaines de caractères
 ## I Généralités
@@ -284,25 +284,62 @@ print(rand_prenom())
 print(rand_prenom())
 print(rand_prenom())
 
-## Les Boucles
-## 
+##IV - applications
+
+## Application 1
+def char_iso(char: str) -> str:
+    return hex(ord(char))
+
+print(char_iso("t"))
+
+## Application 2
+name = input("Entrez votre nom: ")
+if name.lower().startswith("b"):
+    print("Votre prenom commence effectivement par b.")
+else:
+    print("Votre prenom ne commence pas par b.")
 
 
+## Listes
+## II
 
+## Application 1
+jours_semaine = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"]
+premier_jour = jours_semaine[0]
+print(premier_jour)
+jours_semaine.append("dimanche")
+jours_semaine[1] = "Tuesday"
+print(len(jours_semaine))
 
+## Application 2
+nombres_entiers = []
+nombres_entiers.append(1)
+nombres_entiers.append(4)
+nombres_entiers.append(9)
+nombres_entiers = []
+for i in range(20):
+    nombres_entiers.append((i + 1) ** 2)
+carre_15 = nombres_entiers[14]
 
+## Application 3
+## Il affiche le carré des 5 premiers nombres entiers
 
+## Application 4
+## 1) Il affiche chaque char de la liste avec son index
+## 2) On ne pourrait pas afficher l'index des valeurs
 
+## Application 5
+liste_jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 
+print(*liste_jours, sep = "\n")
 
+for s in liste_jours:
+    print(s[0])
 
+## Application II.1
+"""
+Les lignes 3 et 4 sont des créations de listes, la première contient
+6 mots en français, la deuxième contient les même mots en anglais
 
-
-
-
-
-
-
-
-
-
+La ligne 10 donne un nombre aléatoire entre 0 et 5, 
+"""
