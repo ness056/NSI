@@ -1,0 +1,128 @@
+attack -> dict(
+    name,
+    damage,
+    type,
+    precision
+)
+
+pokemon -> dict(
+    name,
+    specie,
+    hp,
+    level,
+    xp,
+    attack,
+    defense,
+    speed,
+    attacks: list[Attack]
+)
+
+pokemon_base -> dict(
+    specie,
+    max_hp_base,
+    attack_base,
+    defense_base,
+    speed_base
+    evo, (espèce du pokemon dans lequel il évolue ou None sinon)
+    evo_level, (level auquel il évolue)
+    types: list[str]
+)
+
+function damage_pokemon:
+    parameters: pokemon, damage, damage_type
+    regarde les types du pokemon et de l'attaque -> *2 ou /2 damage
+    si hp <= 0 -> hp = 0 + mort
+    si hp > max_hp -> hp = max_hp
+    renvoie si pokemon mort
+
+function gain_xp:
+    parameters: pokemon, nombre xp
+
+    ajoute xp au pokemon
+    calcule xp required
+    si xp >= xp required -> level +1 et xp = xp required - xp
+    si level up ->
+        calcule gains stats
+        ajoute stats
+
+    si pokemon atteint level d'évolution ->
+        changer le pokemon
+
+
+player -> dict(
+    name: str
+    inventory: list[item]
+    badges: list[str]
+    money: int
+    pokemons: List[pokemon]
+)
+
+
+quand joueur écrit menu ->
+    afficher le menu principal
+    joueur sélectionne un menu
+    affiche le menu sélectionné
+
+liste pokemon ->
+    affiche tout les pokemons de l'équipe
+    joueur peut écrire le nom d'un pokemon pour voir les stats
+    joueur peut écrire le nom + un nombre pour changer l'ordre
+
+sac -> nombre de chaque objets
+
+badges -> affiche liste des badges
+
+pc ->
+    affiche l'équipe et les pokemon stockés
+    joueur peut prendre pokemon dans stockage ou en déposer
+
+pokedex ->
+    affiche tout les pokemon avec leur stats découvert du jeu
+    point d’interrogation pour ceux pas découvert
+    consulter la description/stats des pokemon
+
+
+combat ->
+    boucle while qui se termine quand tout les pokemon sont mort
+    on regarde quel pokemon a la plus grande vitesse
+    la boucle appelle alternativement les fonctions qui 
+        font jouer le joueur et l'ordi
+    changer le pokemon du joueur/dresseur si leur pokemon meurt
+    si plus de pokemon sortir boucle
+
+    quand combat fini donner les potentiels recompense (argent, xp)
+
+tour joueur ->
+    affiche menu pour choisir quoi faire
+    appeler la fonction qui correspond à l'action
+
+menu attack -> affiche les attaques et les pp
+
+menu changer pokemon -> affiche les autres pokemon avec leur stats
+
+menu objet ->
+    affiche les objets
+    faire l'effet de l'item choisi
+    si pokeball choisi et que capture réussi -> fin combat
+        + ajouter le pokemon dans l'équipe/le pc
+        + choisir nom
+
+fuir combat -> sortir de la boucle
+
+tour ordi -> choisir une attaque aléatoirement ou choisir un
+    nouveau pokemon pour les dresseurs
+
+
+carte ->
+    dict qui contient chaque zone
+    chaque zone est une liste à 2 dimension
+    chaque case est soit un str qui contient le char de son type
+    certaines cases spécial qui ont des infos supplémentaires
+        (portails, pnj...), sont décrite avec un tuple dont le
+        premier index est le type de la case
+    la position du joueur est décrite avec une liste qui a deux
+        nombre, x et y, qui est dans le dictionnaire player
+    pour déplacer le joueur on modifie les coordonnées
+    si le joueur va sur une case de type p (portail) ->
+        le joueur est téléporter dans la zone dans l'index 1 du tuple
+        et à la position x, y des index 2 et 3
