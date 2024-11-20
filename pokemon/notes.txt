@@ -1,3 +1,10 @@
+Les infos des pokemons sont stockés dans 2 endroits différents:
+    Le dict pokemon_base qui contient en index le nom de chaque
+    espèces de pokemon et en valeur les stats communes à tout les
+    pokemons de ce type (types, evolution...). En suite les pokemons
+    en eux même sont des dict avec leur stats spécifique à eu même
+    (name, hp, attacks...)
+
 attack -> dict(
     name,
     damage,
@@ -11,6 +18,7 @@ pokemon -> dict(
     hp,
     level,
     xp,
+    hp_max,
     attack,
     defense,
     speed,
@@ -48,14 +56,23 @@ function gain_xp:
     si pokemon atteint level d'évolution ->
         changer le pokemon
 
-
-player -> dict(
+Les infos du joueur sont stockés dans un dict player -> (
     name: str
-    inventory: list[item]
+    inventory: dict(item_name, nombre d'item)
     badges: list[str]
     money: int
     pokemons: List[pokemon]
 )
+Le jeu va être construit sur une boucle principale while de laquelle
+    on sort en mettant une variable exit à true. Au début de cette
+    boucle on utilise la fonction input pour attendre avoir l'action
+    du joueur, puis on fait l'action (ouvrir un menu, lancer une
+    attaque...) et à la fin de la boucle on update l'écran.
+    Chaque tour de boucle correspond à une action du joueur.
+
+La console est en deux parties, dans la partie du haut on a la carte,
+    les stats des pokemon en combat... En bas le menu, les dialog...
+
 
 
 quand joueur écrit menu ->
@@ -83,12 +100,20 @@ pokedex ->
 
 
 combat ->
-    boucle while qui se termine quand tout les pokemon sont mort
-    on regarde quel pokemon a la plus grande vitesse
+    on a une variable qui dit si le combat est contre un pokemon sauvage
+        ou un dresseur. 
+    le premier pokemon de la list est le premier à ce battre, si il est mort
+        c'est le second
+    les pokemon entrain de se battre sont dans des variable spécifique
+    quand un combat est en cours une variable "combat" est misse a true et
+        la boucle principal va toujours dans le même if. Pour sortir du combat,
+        il faut mettre la variable à false.
+    on regarde quel pokemon a la plus grande vitesse, si ils ont la même
+        vitesse, c'est celui du joueur
     la boucle appelle alternativement les fonctions qui 
-        font jouer le joueur et l'ordi
+        font jouer le joueur et l'ordi en fessant alterné une variable
     changer le pokemon du joueur/dresseur si leur pokemon meurt
-    si plus de pokemon sortir boucle
+    si plus de pokemon sortir du combat
 
     quand combat fini donner les potentiels recompense (argent, xp)
 
@@ -107,13 +132,29 @@ menu objet ->
         + ajouter le pokemon dans l'équipe/le pc
         + choisir nom
 
-fuir combat -> sortir de la boucle
+fuir combat -> sortir du combat
 
 tour ordi -> choisir une attaque aléatoirement ou choisir un
     nouveau pokemon pour les dresseurs
 
 
 carte ->
+
+    cases:
+        " ": case normal
+        "m": mur
+        "R": rocher
+        "p": portail/porte/sortie
+        "o": eau
+        "h": haute herbe
+        "d": dresseur
+        "f": falaise
+        "r": pierre
+        "a": arbuste
+        "I": infirmière
+        "V": vendeur
+        "N": pnj
+
     dict qui contient chaque zone
     chaque zone est une liste à 2 dimension
     chaque case est soit un str qui contient le char de son type
@@ -126,3 +167,36 @@ carte ->
     si le joueur va sur une case de type p (portail) ->
         le joueur est téléporter dans la zone dans l'index 1 du tuple
         et à la position x, y des index 2 et 3
+    pour afficher, ont a une fonction qui prend en paramètre la
+        grille et la position du joueur. Elle parcours la liste
+        avec deux for l'un dans l'autre et on print les char des cases
+        sauf pour le sol normal où on peut marcher, pour ne pas trop
+        encombré l'image. Aussi pour la case où se trouve le joueur
+        où on affiche J. De plus la fonction pour afficher commence
+        par effacer le contenue de la console.
+    pour ce déplacer, le joueur peut écrire z,q,s,d pour se déplacer
+        d'une case dans chaque direction, également il peut écrire
+        une direction + un nombre pour se déplacer de plus case
+        rapidement (ex: z5, q12). Quand le joueurs se déplace on 
+        vérifie toutes les cases qui sont dans le chemin du joueur 
+        avec une boucle en partant de la case la plus proche du
+        joueur. Si une case n'est pas accessible (mur, falaise...),
+        on déplace le joueur en modifiant ces coordonnées sur la
+        dernière case accessible, puis on update l'écran.
+    les pnj et dresseurs sont
+    pour les pnj passifs, quand le joueur appuis sur e, on vérifie
+        si une case collée à lui est un pnj, une infirmière ou
+        un vendeur, si c'est une infirmière ou un vendeur on
+        soigne les pokemon/on affiche le menu d'achat. Si c'est
+        un pnj lambda, on affiche le texte dans le 2e index du tuple
+    pour les dresseurs, a chaque fois que le joueur se déplace,
+        on regarde avec 2 boucle si il y a un dresseur dans les
+        cases avoisinantes et si oui on lance un combat.
+        Avec les pokemons dans le 2e index du tuple
+    pour les pierres/arbustes, quand le joueur appuis sur e,
+        on regardes les cases collées à lui, si une d'elle est
+        une pierre/un arbuste on boucle sur les pokemon du
+        joueurs, puis sur leur attaques, si l'une d'entre elle
+        est casse bric/coupe
+    quand le joueur ce déplace sur une haute herbe, il y a une
+    probabilité que un combat contre un pokemon sauvage démarre

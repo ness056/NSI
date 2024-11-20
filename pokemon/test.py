@@ -87,3 +87,21 @@ zone = {
         ...        
     }
 }
+
+test = ["a", "b", "c"]
+
+for item in test:
+    pass
+
+for index in range(len(test)):
+    pass
+
+
+exit = False
+
+while(exit == False):
+    input()
+
+    déplace le joueur, ouvre un menu...
+
+    update écran
