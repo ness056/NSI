@@ -88,6 +88,30 @@ zone = {
     }
 }
 
+pokemon_base = {
+    "Pikachou": {
+        "espèce": "Pikachou",
+        "pv": 39
+    }
+}
+
+def create_pokemon(specie: str):
+    pokemon_base[specie]["pv"]
+    pokemon_b = pokemon_base[specie]
+    base_pv = pokemon_b["pv"]
+
+    pokemon = {
+        "espèce": specie
+    }
+
+    return pokemon
+
+{
+    
+}
+
+pokemon_sauvage = create_pokemon("pikachou")
+
 test = ["a", "b", "c"]
 
 for item in test:
