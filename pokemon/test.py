@@ -106,9 +106,14 @@ def create_pokemon(specie: str):
 
     return pokemon
 
-{
+def test():
     
-}
+    if True:
+        a = 1
+    else:
+        a = 1.5
+
+    print(a)
 
 pokemon_sauvage = create_pokemon("pikachou")
 
