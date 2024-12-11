@@ -1,0 +1,51 @@
+pokemon (7 points) :
+
+    [x] - Dictionnaire pokemon de base : Fourni
+    [x] - Fonction création d'un pokemon à partir du dictionnaire de base : 4 points
+    [x] - Fonction gain d'expérience : 1 points
+    [x] - Fonction gain de niveau : 1 points
+    [x] - Fonction Evolution : 1 points
+
+Joueur (8 points) :
+
+    [ ] - Intro
+    [x] - Dictionnaire Joueur : 1 points
+    [x] - Fonctionnalité Menu : affichage argent, affichage badges, quitter le menu : 1 points
+    [ ] - Fonctionnalité Stockage pokemon 2 points
+    [x] - Fonctionnalité Sac : ajout d'objet, affichage du sac 1 points
+    [ ] - Fonctionnalité Sac : utiliser les objets du sac 2 points
+    [ ] - Fonctionnalité équipe : changer l'ordre des pokémon de l'équipe 1 points
+
+Combat (12 points) :
+
+    [x] - Tour par Tour avec condition de fin 1 points
+    [x] - Système de pokemon actif 1 points
+    [x] - Respect de la vitesse des pokemon pour l'ordre des tours 0,5 points
+    [x] - Choix des attaques pour les adversaires 0,5 points
+    [x] - Choix des actions pour le joueur 0,5 points
+    [x] - Utiliser une attaque 3 points
+    [x] - Action fuite 0,5 points
+    [x] - Action Equipe (changer de pokemon actif) 0,5 points
+    [x] - Utiliser un objet en combat 0,5 points
+    [x] - Utiliser une pokeball en combat 1 points
+    [x] - Gain d'experience et de niveau en combat 0,5 points
+    [x] - Changement de pokemon actif en cas de KO 0,5 points
+    [x] - Vérification des conditions de fin de combat 1 points
+    [x] - Distinction entre combat dresseur et pokemon sauvage 0,5 points
+    [x] - Fonctionnalité post combat : évolution, gain d'argent 0,5 points
+
+Carte (15 points) :
+
+    [x] - Cases hits
+    [x] - Affichage Console : 1,5 points
+    [x] - Création de zone et d'une carte : 0,5 points
+    [x] - Déplacement dans une direction : 2 points
+    [x] - Vérification de déplacement valide : 0,5 points
+    [x] - éléments impassable : 0,5 points
+    [x] - Falaise : 0,5 points
+    [x] - Pierre à déplacer : 0,5 points
+    [x] - Arbuste : 1 points
+    [x] - Interaction personnage non dresseur : 2 points
+    [x] - Interaction dresseur : 2 points
+    [x] - Case haute-herbe : 2 points
+    [x] - Déplacement inter-zone : 2 points
